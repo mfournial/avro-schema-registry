@@ -7,6 +7,7 @@ const https = require('https');
 const SchemaCache = require('./lib/schema-cache');
 const decodeFunction = require('./lib/decode-function');
 const encodeFunction = require('./lib/encode-function');
+const SchemaProxy = require('./lib/proxy-schema');
 
 function schemas(registryUrl) {
   const parsed = url.parse(registryUrl);
@@ -22,10 +23,12 @@ function schemas(registryUrl) {
     registry.auth = parsed.auth;
   }
 
-  const decode = decodeFunction(registry)
+  const decode = decodeFunction(registry);
   const encodeKey = encodeFunction.bySchema('key', registry);
   const encodeMessage = encodeFunction.bySchema('value', registry);
   const encodeById = encodeFunction.byId(registry);
+  const pushKeySchema = SchemaProxy.bySchema('key', registry);
+  const pushMsgSchema = SchemaProxy.bySchema('value', registry);
 
   return {
     decode,
@@ -33,6 +36,8 @@ function schemas(registryUrl) {
     encodeById,
     encodeKey,
     encodeMessage,
+    pushKeySchema,
+    pushMsgSchema,
   };
 };
 
